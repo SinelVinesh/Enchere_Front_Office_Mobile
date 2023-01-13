@@ -1,0 +1,14 @@
+.container table,th,td{
+    margin-top: -.5cm;
+  border-collapse: collapse;
+  border: solid 1px #809e9b;
+  width: 24cm;
+  text-align: center;
+  margin-left: 2cm;
+}
+
+.image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
