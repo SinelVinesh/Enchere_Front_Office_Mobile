@@ -15,19 +15,13 @@ import {
     useIonViewWillEnter
 } from '@ionic/react';
 import './Login.scss';
-import {RouteComponentProps} from 'react-router';
 import {userLogin} from '../../../data/dataApi';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {loggedIn, selectUser} from '../../../data/userSlice';
 import {Link} from "react-router-dom";
+import {useHistory} from "react-router";
 
-interface OwnProps extends RouteComponentProps {
-}
-
-interface LoginProps extends OwnProps {
-}
-
-const Login: React.FC<LoginProps> = ({history}) => {
+const Login: React.FC = () => {
     const user = useAppSelector(selectUser);
     const dispatch = useAppDispatch();
     const [username, setUsername] = useState('');
@@ -37,6 +31,8 @@ const Login: React.FC<LoginProps> = ({history}) => {
     const [passwordInvalid, setPasswordInvalid] = useState(false);
     const [showLoginToast, setShowLoginToast] = useState(false);
     const [loginResult, setLoginResult] = useState<"error" | "succes">("error");
+
+    const history = useHistory();
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
         setFormSubmitted(true);
@@ -102,7 +98,7 @@ const Login: React.FC<LoginProps> = ({history}) => {
                                                   onIonChange={e => setUsername(e.detail.value!)}
                                                   required>
                                         </IonInput>
-                                        <IonNote slot="error">Nom d'utilisateur invalide</IonNote>
+                                        <IonNote slot="error">{usernameInvalid}</IonNote>
                                     </IonItem>
 
                                     <IonItem className={`${passwordInvalid && 'ion-invalid'}`}>
@@ -110,7 +106,7 @@ const Login: React.FC<LoginProps> = ({history}) => {
                                         <IonInput name="password" type="password" value={password}
                                                   onIonChange={e => setPassword(e.detail.value!)}>
                                         </IonInput>
-                                        <IonNote slot="error">Mot de passe invalide</IonNote>
+                                        <IonNote slot="error">{passwordInvalid}</IonNote>
                                     </IonItem>
 
                                     {formSubmitted && passwordInvalid && <IonText color="danger">
