@@ -66,8 +66,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
         </IonList>
         <IonList lines="none">
           <IonListHeader>Compte</IonListHeader>
-          {user.isLoggedIn ? renderlistItems(routes.loggedInPages) : renderlistItems(routes.loggedOutPages)}
-        </IonList>
+          </IonList>
       </IonContent>
     </IonMenu>
   );

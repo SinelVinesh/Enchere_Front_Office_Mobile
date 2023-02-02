@@ -2,8 +2,6 @@ import React  from 'react';
 import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
 import { Route, Redirect } from 'react-router';
 import {addCircle, car, documentTextOutline, home, person} from 'ionicons/icons';
-import VehiclesListPage from './vehicles/list/VehiclesListPage';
-import VehicleDetail from './vehicles/detail/VehicleDetail';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../data/userSlice';
 import AuctionsListPage from "./Auctions/AuctionsListPage/AuctionsListPage";
@@ -46,8 +44,6 @@ const MainTabs: React.FC<MainTabsProps> = () => {
           Using the render method prop cuts down the number of renders your components will have due to route changes.
           Use the component prop when your component depends on the RouterComponentProps passed in automatically.
         */}
-        <Route path="/tabs/vehicles" render={() => <VehiclesListPage />} exact={true} />
-        <Route path="/tabs/vehicles/:id" component={VehicleDetail} exact/>
       <Route path="/tabs/auctions" component={AuctionsListPage} exact/>
       <Route path="/tabs/auctions/:id" component={AuctionDetailsPage} exact/>
           <Route path="/tabs/new" component={AuctionFormPage} exact/>

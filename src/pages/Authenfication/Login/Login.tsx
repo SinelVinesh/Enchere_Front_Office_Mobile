@@ -15,57 +15,56 @@ import {
     useIonViewWillEnter
 } from '@ionic/react';
 import './Login.scss';
-import {userLogin} from '../../../data/dataApi';
+import {login, userLogin} from '../../../data/dataApi';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {loggedIn, selectUser} from '../../../data/userSlice';
 import {Link} from "react-router-dom";
 import {useHistory} from "react-router";
+import {Preferences} from "@capacitor/preferences";
+import {AxiosError} from "axios";
 
 const Login: React.FC = () => {
     const user = useAppSelector(selectUser);
     const dispatch = useAppDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [formSubmitted, setFormSubmitted] = useState(false);
-    const [usernameInvalid, setUsernameInvalid] = useState(false);
-    const [passwordInvalid, setPasswordInvalid] = useState(false);
+    const [usernameInvalid, setUsernameInvalid] = useState<string| boolean>(false);
+    const [passwordInvalid, setPasswordInvalid] = useState<string| boolean>(false);
     const [showLoginToast, setShowLoginToast] = useState(false);
-    const [loginResult, setLoginResult] = useState<"error" | "succes">("error");
+    const [loginResult, setLoginResult] = useState<string>("");
+    const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
 
     const history = useHistory();
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setFormSubmitted(true);
         setUsernameInvalid(false)
         setPasswordInvalid(false)
         if (!username) {
-            setUsernameInvalid(true);
+            setUsernameInvalid("Veuillez saisir un nom d'utilisateur");
         }
         if (!password) {
-            setPasswordInvalid(true);
+            setPasswordInvalid("Veuillez saisir un mot de passe");
         }
 
         if (username && password) {
-            await userLogin(username, password)
+            await login(username, password)
                 .then((data) => {
-                    console.log(data.token);
+                    console.log(data);
                     data.username = username;
-                    data.isLoggedIn = true;
-                    dispatch(loggedIn(data));
+                    Preferences.set({key: "userToken", value: JSON.stringify(data)});
+                    setLoginSuccess(true);
                     setShowLoginToast(true);
-                    setLoginResult("succes");
-                    history.push('/tabs/vehicles', {direction: 'none'});
+                    setLoginResult("Connexion réussie");
+                    history.push('/tabs/auctions', {direction: 'none'});
                 })
-                .catch((error: any) => {
-                    if (error.response.status === 400) {
-                        setShowLoginToast(true);
-                        setLoginResult("error")
-                    }
+                .catch((error: AxiosError) => {
+                    setPasswordInvalid((error.response?.data as any).error)
+                    setUsernameInvalid('')
                 });
         }
     };
     useIonViewWillEnter(() => {
-        setUsername("Jean");
+        setUsername("rkt_01");
         setPassword("123");
     })
     return (
@@ -76,14 +75,10 @@ const Login: React.FC = () => {
                         <IonCol>
                             <IonToast
                                 isOpen={showLoginToast}
-                                message={
-                                    (loginResult === "error") ?
-                                        "Verifiez le nom d'utilisateur et/ou le mot de passe" :
-                                        "Connexion réussie"
-                                }
+                                message={loginResult}
                                 duration={2000}
                                 onDidDismiss={() => setShowLoginToast(false)}
-                                color={(loginResult === "error") ? "danger" : "success"}
+                                color={"success"}
                                 position="top"
                             />
                             <IonText color={"primary"} className={"login-header"}>
@@ -91,29 +86,26 @@ const Login: React.FC = () => {
                             </IonText>
                             <form noValidate onSubmit={submit}>
                                 <IonList>
-                                    <IonItem className={`${usernameInvalid && 'ion-invalid'}`}>
+                                    <IonItem className={`${usernameInvalid !== false && 'ion-invalid'}`}>
                                         <IonLabel position="floating" color="primary">Nom d'utilisateur</IonLabel>
-                                        <IonInput name="username" type="text" value={username} spellCheck={false}
-                                                  autocapitalize="off"
-                                                  onIonChange={e => setUsername(e.detail.value!)}
-                                                  required>
+                                        <IonInput name="username" type="text" value={username}
+                                                  onIonChange={e => {
+                                                    setUsernameInvalid(false);
+                                                    setUsername(e.detail.value!)
+                                                  }}>
                                         </IonInput>
                                         <IonNote slot="error">{usernameInvalid}</IonNote>
                                     </IonItem>
 
-                                    <IonItem className={`${passwordInvalid && 'ion-invalid'}`}>
+                                    <IonItem className={`${passwordInvalid !== false && 'ion-invalid'}`}>
                                         <IonLabel position="floating" color="primary">Mot de passe</IonLabel>
                                         <IonInput name="password" type="password" value={password}
-                                                  onIonChange={e => setPassword(e.detail.value!)}>
+                                                  onIonChange={e => {
+                                                      setPasswordInvalid(false);
+                                                      setPassword(e.detail.value!)}}>
                                         </IonInput>
                                         <IonNote slot="error">{passwordInvalid}</IonNote>
                                     </IonItem>
-
-                                    {formSubmitted && passwordInvalid && <IonText color="danger">
-                                        <p className="ion-padding-start">
-                                            Password is required
-                                        </p>
-                                    </IonText>}
                                 </IonList>
                                 <IonRow>
                                     <IonCol>

@@ -4,12 +4,14 @@ import { Response} from './Response'
 import { User } from '../models/User';
 import axios from 'axios';
 import {Category} from "../models/Category";
+import {Auction} from "../models/Auction";
 
 // data urls
 const host = 
 // "https://gestionflotte-production-0361.up.railway.app/"
-"http://localhost:8080/"
+"http://localhost:8080"
 const loginUrl = `${host}/users/login`
+const auctionsUrl = `${host}/auctions`
 
 
 /* api calls */
@@ -47,60 +49,14 @@ export const putCall = (url: string, data: any, auth = false) => {
         .then((res) => res.data.data)
 }
 
-export const login = (username: string, password: string) => {
+export const login = (username: string, password: string): Promise<User> => {
     return postCall(loginUrl, { username, password })
 }
 
-export const getAuctions = async () => {
-    return [
-        {
-            id: 0,
-            title: "Exemple d'enchere",
-            description: "Description de l'enchere qui donne plus d'information a l'utilisateur",
-            topBid: {
-                user: {
-                    username: "Rasoa"
-                },
-                amount: 950000
-            },
-            endDate: "2023-02-17T13:00:00"
-        },{
-            id: 1,
-            title: "Exemple d'enchere",
-            description: "Description de l'enchere qui donne plus d'information a l'utilisateur",
-            topBid: {
-                user: {
-                    username: "Rasoa"
-                },
-                amount: 950000
-            },
-            endDate: "2023-02-17T13:00:00"
-        },{
-            id: 2,
-            title: "Exemple d'enchere",
-            description: "Description de l'enchere qui donne plus d'information a l'utilisateur",
-            topBid: {
-                user: {
-                    username: "Rasoa"
-                },
-                amount: 950000,
-            },
-            endDate: "2023-02-17T13:00:00"
-        },{
-            id: 3,
-            title: "Exemple d'enchere",
-            description: "Description de l'enchere qui donne plus d'information a l'utilisateur",
-            topBid: {
-                user: {
-                    username: "Rasoa"
-                },
-                amount: 950000
-            },
-            endDate: "2023-02-17T13:00:00"
-        },
-
-    ]
+export const getAuctions = (): Promise<Auction[]> => {
+    return getCall(auctionsUrl, true)
 }
+
 
 export const getAuction = (id: number) => {
     return {

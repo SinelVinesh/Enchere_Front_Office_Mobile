@@ -74,9 +74,8 @@ const Register: React.FC<RegisterProps> = ({history}) => {
             history.push('/auctions')
             await userLogin(username, password)
                 .then((data) => {
-                    console.log(data.token);
+                    console.log(data);
                     data.username = username;
-                    data.isLoggedIn = true;
                     dispatch(loggedIn(data));
                     history.push('/tabs/vehicles', {direction: 'none'});
                 })
