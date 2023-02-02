@@ -1,11 +1,15 @@
 import React  from 'react';
 import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
 import { Route, Redirect } from 'react-router';
-import {car, documentTextOutline } from 'ionicons/icons';
+import {addCircle, car, documentTextOutline, home, person} from 'ionicons/icons';
 import VehiclesListPage from './vehicles/list/VehiclesListPage';
 import VehicleDetail from './vehicles/detail/VehicleDetail';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../data/userSlice';
+import AuctionsListPage from "./Auctions/AuctionsListPage/AuctionsListPage";
+import AuctionDetailsPage from "./Auctions/AuctionDetailsPage/AuctionDetailsPage";
+import AuctionFormPage from "./Auctions/AuctionFormPage/AuctionFormPage";
+import UserProfile from "./User/UserProfile/UserProfile";
 
 interface MainTabsProps { }
 
@@ -44,13 +48,21 @@ const MainTabs: React.FC<MainTabsProps> = () => {
         */}
         <Route path="/tabs/vehicles" render={() => <VehiclesListPage />} exact={true} />
         <Route path="/tabs/vehicles/:id" component={VehicleDetail} exact/>
+      <Route path="/tabs/auctions" component={AuctionsListPage} exact/>
+      <Route path="/tabs/auctions/:id" component={AuctionDetailsPage} exact/>
+          <Route path="/tabs/new" component={AuctionFormPage} exact/>
+          <Route path="/tabs/profile" component={UserProfile} exact/>
       </IonRouterOutlet>
       <IonTabBar slot="bottom">
-        <IonTabButton tab='vehicles' href='/tabs/vehicles'>
-          <IonIcon icon={car}/>
-          <IonLabel>Vehicles</IonLabel>
+        <IonTabButton tab='new' href='/tabs/new'>
+          <IonIcon icon={addCircle}/>
         </IonTabButton>
-        { user.isLoggedIn && renderButtons(route.loggedInButtons) }
+        <IonTabButton tab='auctions' href='/tabs/auctions'>
+          <IonIcon icon={home}/>
+        </IonTabButton>
+        <IonTabButton tab='profil' href='/tabs/profile'>
+          <IonIcon icon={person}/>
+        </IonTabButton>
       </IonTabBar>
     </IonTabs>
   );

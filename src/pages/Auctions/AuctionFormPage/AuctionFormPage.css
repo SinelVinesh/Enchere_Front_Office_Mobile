@@ -1,0 +1,21 @@
+.upload-image-preview {
+    min-height: 80px;
+    max-height: 80px;
+    object-fit: cover;
+    width: 100%;
+    background-color: white;
+    border-radius: 8px;
+}
+
+.upload-image-delete-button {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #f44336;
+    color: white;
+    border-radius: 20px;
+    border: none;
+    font-size: 9px;
+    cursor: pointer;
+    height: 30px;
+}

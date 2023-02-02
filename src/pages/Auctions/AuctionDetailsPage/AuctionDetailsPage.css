@@ -1,0 +1,16 @@
+.detail-text {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.detail-swiper {
+    position: fixed;
+    width: 100%;
+    z-index: 5;
+}
+
+.detail-body {
+    margin-top: 200px;
+}

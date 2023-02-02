@@ -23,8 +23,10 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import './theme/style.css';
 import MainTabs from './pages/MainTabs';
-import Login from './pages/Login';
+import Login from './pages/Authenfication/Login/Login';
+import Register from "./pages/Authenfication/Register/Register";
 
 setupIonicReact();
 
@@ -50,6 +52,7 @@ const IonicApp: React.FC<IonicAppProps> = ({}) => {
                 */}
                 <Route path="/tabs" render={() => <MainTabs />} />
                 <Route path="/login" component={Login}  exact/>
+                <Route path="/register" component={Register} exact/>
                 <Route path="/logout" />
                 <Route path="/" render={() => <Redirect to={{pathname:"/login"}}/>} exact />
               </IonRouterOutlet>

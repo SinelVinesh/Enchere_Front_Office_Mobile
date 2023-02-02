@@ -2,7 +2,16 @@ import React from 'react';
 import { RouteComponentProps, withRouter, useLocation } from 'react-router';
 
 import { IonContent, IonIcon, IonItem, IonLabel, IonList, IonListHeader, IonMenu, IonMenuToggle, IonToggle } from '@ionic/react';
-import { airplaneOutline, moonOutline, documentTextOutline, logIn, logOut,person, documentAttachOutline,} from 'ionicons/icons';
+import {
+  airplaneOutline,
+  moonOutline,
+  documentTextOutline,
+  logIn,
+  logOut,
+  person,
+  documentAttachOutline,
+  readerOutline,
+} from 'ionicons/icons';
 
 
 import './Menu.css'
@@ -11,7 +20,7 @@ import { selectUser } from '../data/userSlice';
 
 const routes = {
   appPages: [
-    { title: 'Avions', path: '/tabs/vehicles', icon: airplaneOutline },
+    { title: 'Mes Encheres', path: '/tabs/auctions/mine', icon: readerOutline },
   ],
   loggedInPages: [
     { title: 'Logout', path: '/logout', icon: logOut }
@@ -52,7 +61,7 @@ const Menu: React.FC<MenuProps> = ({}) => {
     <IonMenu  type="overlay" disabled={!true} contentId="main">
       <IonContent forceOverscroll={false}>
         <IonList lines="none">
-          <IonListHeader>Avions</IonListHeader>
+          <IonListHeader>Encheres</IonListHeader>
           {renderlistItems(routes.appPages)}
         </IonList>
         <IonList lines="none">
