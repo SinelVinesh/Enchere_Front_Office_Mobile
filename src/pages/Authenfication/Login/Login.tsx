@@ -50,7 +50,6 @@ const Login: React.FC = () => {
             await login(username, password)
                 .then((data) => {
                     console.log(data);
-                    data.username = username;
                     Preferences.set({key: "userToken", value: JSON.stringify(data)});
                     setLoginSuccess(true);
                     setShowLoginToast(true);
@@ -64,8 +63,8 @@ const Login: React.FC = () => {
         }
     };
     useIonViewWillEnter(() => {
-        setUsername("rkt_01");
-        setPassword("123");
+        setUsername("Jean.Marie");
+        setPassword("Motdepasse123*");
     })
     return (
         <IonPage id="login-page">

@@ -13,13 +13,18 @@ import {
 import {addCircle, addOutline, trash} from "ionicons/icons";
 import {Camera, CameraResultType, Photo} from "@capacitor/camera";
 import "./AuctionFormPage.css"
+import {Auction} from "../../../models/Auction";
 interface AuctionImagesProps {
-    prevPage: () => void
+    prevPage: () => void,
+    auction: Auction,
+    setAuction: (auction: Auction) => void
+    upload: () => void
 }
 
-const AuctionImages: React.FC<AuctionImagesProps> = ({ prevPage }) => {
+const AuctionImages: React.FC<AuctionImagesProps> = ({ prevPage, auction, setAuction, upload }) => {
     const [images, setImages] = React.useState<Photo[]>([]);
     const [activeImage, setActiveImage] = React.useState<Photo | undefined>(undefined);
+    const [invalidImage, setInvalidImage] = React.useState<String| boolean>(false);
     const [isOpen, setIsOpen] = React.useState(false);
     const uploadImage = async() => {
         const result = await Camera.getPhoto({
@@ -37,6 +42,19 @@ const AuctionImages: React.FC<AuctionImagesProps> = ({ prevPage }) => {
     const openPreview = (image: Photo) => {
         setActiveImage(image);
         setIsOpen(true);
+    }
+
+    const submit = () => {
+        let valid = true;
+        setInvalidImage(false);
+        if(images.length < 1) {
+            setInvalidImage("Vous devez ajouter au moins une image");
+            valid = false;
+        }
+        if(valid) {
+            setAuction({...auction, images: images});
+            upload();
+        }
     }
     return(
         <>
@@ -76,7 +94,7 @@ const AuctionImages: React.FC<AuctionImagesProps> = ({ prevPage }) => {
                         <IonButton type="button" expand="block" onClick={prevPage}>Précédent</IonButton>
                     </IonCol>
                     <IonCol>
-                        <IonButton type="button" expand="block">Enregistrer</IonButton>
+                        <IonButton type="button" expand="block" onClick={submit}>Enregistrer</IonButton>
                     </IonCol>
                 </IonRow>
             </IonGrid>

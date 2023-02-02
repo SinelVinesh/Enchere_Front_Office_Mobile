@@ -159,22 +159,6 @@ const UserProfile: React.FC = () => {
                             </IonInput>
                             <IonNote slot="error">{usernameInvalid}</IonNote>
                         </IonItem>
-                        <IonItem className={`${birthDateInvalid !== false && 'ion-invalid'}`}>
-                            <IonLabel position="floating" color="primary">Date de naissance</IonLabel>
-                            <IonInput id="birthDate" value={birthDate && format(new Date(birthDate),'dd MMMM yyyy', {locale: fr})} spellCheck={false}
-                                      autocapitalize="off"
-                                      required>
-                            </IonInput>
-                            <IonPopover trigger="birthDate" size={"cover"}>
-                                <IonDatetime
-                                    presentation="date"
-                                    value={birthDate}
-                                    onIonChange={e => setBirthDate(e.detail.value! as string)}
-                                    locale="fr"
-                                ></IonDatetime>
-                            </IonPopover>
-                            <IonNote slot="error">{birthDateInvalid}</IonNote>
-                        </IonItem>
                         <IonItem className={`${(newPasswordInvalid !== false || newPasswordMatchInvalid) && 'ion-invalid'}`}>
                             <IonLabel position="floating" color="primary">Nouveau mot de passe</IonLabel>
                             <IonInput name="username" type="text" value={newPassword} spellCheck={false}

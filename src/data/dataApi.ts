@@ -5,21 +5,29 @@ import { User } from '../models/User';
 import axios from 'axios';
 import {Category} from "../models/Category";
 import {Auction} from "../models/Auction";
+import {UserToken} from "../models/UserToken";
+import {Preferences} from "@capacitor/preferences";
 
 // data urls
-const host = 
+export const host =
 // "https://gestionflotte-production-0361.up.railway.app/"
 "http://localhost:8080"
 const loginUrl = `${host}/users/login`
 const auctionsUrl = `${host}/auctions`
-
+const registerUrl = `${host}/users/register`
+const categoriesUrl = `${host}/categories`
 
 /* api calls */
 // Generic
-export const getCall = (url: string, auth = false) => {
+export const getCall = async (url: string, auth = false) => {
     let config = {}
     if (auth) {
-        config = { headers: { Authorization: `Bearer ${localStorage.getItem('user-token')}` } }
+        const { value } = await Preferences.get({key: "userToken"});
+        let userToken: UserToken | undefined = undefined
+        if(value) {
+            userToken = JSON.parse(value) as UserToken
+        }
+        config = { headers: { Authorization: `Bearer ${userToken?.value}` } }
     }
     return axios
         .get(url, config)
@@ -27,10 +35,15 @@ export const getCall = (url: string, auth = false) => {
         .then((res) => res.data.data)
 }
 
-export const postCall = (url: string, data: any, auth = false) => {
+export const postCall = async (url: string, data: any, auth = false) => {
     let config = {}
     if (auth) {
-        config = { headers: { Authorization: 'Bearer ' + localStorage.getItem('user-token') } }
+        const { value } = await Preferences.get({key: "userToken"});
+        let userToken: UserToken | undefined = undefined
+        if(value) {
+            userToken = JSON.parse(value) as UserToken
+        }
+        config = { headers: { Authorization: `Bearer ${userToken?.value}` } }
     }
     return axios
         .post(url, data, config)
@@ -38,10 +51,15 @@ export const postCall = (url: string, data: any, auth = false) => {
         .then((res) => res.data.data)
 }
 
-export const putCall = (url: string, data: any, auth = false) => {
+export const putCall = async (url: string, data: any, auth = false) => {
     let config = {}
     if (auth) {
-        config = { headers: { Authorization: 'Bearer ' + localStorage.getItem('user-token') } }
+        const { value } = await Preferences.get({key: "userToken"});
+        let userToken: UserToken | undefined = undefined
+        if(value) {
+            userToken = JSON.parse(value) as UserToken
+        }
+        config = { headers: { Authorization: `Bearer ${userToken?.value}` } }
     }
     return axios
         .put(url, data, config)
@@ -49,14 +67,20 @@ export const putCall = (url: string, data: any, auth = false) => {
         .then((res) => res.data.data)
 }
 
-export const login = (username: string, password: string): Promise<User> => {
+export const login = (username: string, password: string): Promise<UserToken> => {
     return postCall(loginUrl, { username, password })
+}
+export const register = (data: User): Promise<UserToken> => {
+    return postCall(registerUrl, data)
 }
 
 export const getAuctions = (): Promise<Auction[]> => {
     return getCall(auctionsUrl, true)
 }
 
+export const saveAuction = (auction: Auction): Promise<Auction> => {
+    return postCall(auctionsUrl, auction, true)
+}
 
 export const getAuction = (id: number) => {
     return {
@@ -83,20 +107,7 @@ export const getAuction = (id: number) => {
 
 
 export const getCategories = async (): Promise<Category[]> => {
-    return [
-        {
-            id: 0,
-            name: "Technologie"
-        },
-        {
-            id: 1,
-            name: "Vetements"
-        },
-        {
-            id: 2,
-            name: "Maison"
-        }
-    ] as Category[]
+    return getCall(categoriesUrl)
 }
 
 export const getUser = async (): Promise<User> => {
@@ -142,3 +153,5 @@ export const saveImage = async(vehicle: Vehicle, image:Image) => {
         .then(res => res.data as Promise<Response<any>>)
         .then(data => data.message);
 }
+
+

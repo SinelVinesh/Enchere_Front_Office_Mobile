@@ -9,7 +9,7 @@ import {
     IonTitle,
     IonToolbar, useIonLoading
 } from "@ionic/react";
-import {getAuctions} from "../../../data/dataApi";
+import {getAuctions, host} from "../../../data/dataApi";
 import Timer from "../../../components/common/Timer";
 import {useHistory} from "react-router";
 import {search} from "ionicons/icons";
@@ -64,7 +64,7 @@ const AuctionsListPage: React.FC = () => {
                     </IonRow>
                     {auctions && auctions.map((auction) => (
                         <IonCard key={`auc-${auction.id}`}>
-                            <img alt="placeholder" src="/assets/img/ica-slidebox-img-1.png" className={"auction-list-image"} onClick={() => toDetail(auction.id)}/>
+                            <img alt="placeholder" src={auction.images != undefined && auction.images[0] != undefined ? `${host}${auction.images[0].photoPath!}` : '/assets/img/ica-slidebox-img-1.png'} className={"auction-list-image"} onClick={() => toDetail(auction.id!)}/>
                             <IonCardHeader>
                                 <IonCardHeader>
                                     <IonCardTitle>
@@ -72,13 +72,13 @@ const AuctionsListPage: React.FC = () => {
                                     </IonCardTitle>
                                     <IonCardSubtitle>
                                         {
-                                            auction.auctionState.id === 1 ?
-                                            <>Commence dans: <Timer expirationTime={auction.startDate} /></>
+                                            auction.auctionState?.id === 1 ?
+                                            <>Commence dans: <Timer expirationTime={new Date(auction.startDate!)} /></>
                                             :
-                                            auction.auctionState.id === 2 ?
-                                            <>Se termine dans: <Timer expirationTime={new Date(auction.endDate)}/></>
+                                            auction.auctionState?.id === 2 ?
+                                            <>Se termine dans: <Timer expirationTime={new Date(auction.endDate!)}/></>
                                             :
-                                            auction.auctionState.id === 3 ?
+                                            auction.auctionState?.id === 3 ?
                                             "Enchère terminée" : ""
                                         }
                                     </IonCardSubtitle>
@@ -91,21 +91,21 @@ const AuctionsListPage: React.FC = () => {
                                         </IonRow>
                                         <IonRow>
                                             {
-                                                (auction.auctionState.id === 1 || (auction.auctionState.id === 2 && auction.topBid === null)) ?
+                                                (auction.auctionState?.id === 1 || (auction.auctionState?.id === 2 && auction.topBid === null)) ?
                                             <>
                                                 <strong className={"card-subtitle"}>Prix de départ: </strong>
                                                 <br />
-                                                {auction.startingPrice.toLocaleString('fr-Fr',{ minimumFractionDigits: 2, maximumFractionDigits: 2})} Ar
+                                                {auction.startingPrice?.toLocaleString('fr-Fr',{ minimumFractionDigits: 2, maximumFractionDigits: 2})} Ar
                                             </>
                                             :
-                                            auction.auctionState.id === 2 && auction.topBid !== null ?
+                                            auction.auctionState?.id === 2 && auction.topBid !== null ?
                                             <>
                                             <strong className={"card-subtitle"}>Mise actuelle :</strong>
                                             <br />
                                             {`@${auction.topBid?.appUser.username}: ${auction.topBid?.amount.toLocaleString('fr-Fr',{ minimumFractionDigits: 2, maximumFractionDigits: 2})} Ar`}
                                             </>
                                             :
-                                            auction.auctionState.id === 3 && auction.topBid !== null ?
+                                            auction.auctionState?.id === 3 && auction.topBid !== null ?
                                             <>
                                                 <strong className={"card-subtitle"}>Mise finale :</strong>
                                                 <br />
