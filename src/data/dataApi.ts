@@ -16,6 +16,7 @@ const loginUrl = `${host}/users/login`
 const auctionsUrl = `${host}/auctions`
 const registerUrl = `${host}/users/register`
 const categoriesUrl = `${host}/categories`
+const auctionUrl = (id: string) => `${auctionsUrl}/${id}`
 
 /* api calls */
 // Generic
@@ -82,27 +83,8 @@ export const saveAuction = (auction: Auction): Promise<Auction> => {
     return postCall(auctionsUrl, auction, true)
 }
 
-export const getAuction = (id: number) => {
-    return {
-        id: 1,
-        title: "Exemple d'enchere avec un tire assez long",
-        description: "Description de l'enchere qui donne plus d'information a l'utilisateur",
-        topBid: {
-            user: {
-                username: "Rasoa"
-            },
-            amount: 950000,
-            date: "2023-02-01T09:00:00"
-        },
-        category: {
-            name: 'Technologie'
-        },
-        author: {
-            username: "Jhonnz"
-        },
-        startDate: "2023-01-30T13:00:00",
-        endDate: "2023-02-17T13:00:00",
-    }
+export const getAuction = (id: string) => {
+    return getCall(auctionUrl(id))
 }
 
 
