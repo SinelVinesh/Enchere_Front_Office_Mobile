@@ -28,14 +28,16 @@ const AuctionImages: React.FC<AuctionImagesProps> = ({ prevPage, auction, setAuc
     const [isOpen, setIsOpen] = React.useState(false);
     const uploadImage = async() => {
         const result = await Camera.getPhoto({
-            quality: 90,
+            quality: 60,
             allowEditing: true,
             resultType: CameraResultType.Base64
         })
+        setAuction({...auction, images: [...images, result]});
         setImages([...images, result]);
     }
 
     const deleteImage = (image: Photo) => {
+        setAuction({...auction, images: images.filter((img) => img !== image)});
         setImages(images.filter((img) => img !== image));
     }
 
@@ -52,7 +54,6 @@ const AuctionImages: React.FC<AuctionImagesProps> = ({ prevPage, auction, setAuc
             valid = false;
         }
         if(valid) {
-            setAuction({...auction, images: images});
             upload();
         }
     }

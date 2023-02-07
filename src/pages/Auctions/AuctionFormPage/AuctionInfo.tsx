@@ -40,7 +40,7 @@ const AuctionInfo: React.FC<AuctionInfoProps> = ({nextPage, setAuction, auction}
     const [bidStep, setBidStep] = useState(auction.bidStep?.toString() ?? "100");
     const [bidStepInvalid, setBidStepInvalid] = useState<string|boolean>(false);
     const [categories, setCategories] = useState<Category[]>([])
-    const minDate = new Date().toISOString();
+    const minDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss", {locale: fr});
     const submit = () => {
         let valid = true;
         setTitleInvalid(false);

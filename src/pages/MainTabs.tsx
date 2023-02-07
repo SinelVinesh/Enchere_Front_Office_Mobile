@@ -1,13 +1,14 @@
 import React  from 'react';
 import { IonTabs, IonRouterOutlet, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/react';
 import { Route, Redirect } from 'react-router';
-import {addCircle, car, documentTextOutline, home, person} from 'ionicons/icons';
+import {addCircle, barbell, car, documentTextOutline, home, person} from 'ionicons/icons';
 import { useAppSelector } from '../app/hooks';
 import { selectUser } from '../data/userSlice';
 import AuctionsListPage from "./Auctions/AuctionsListPage/AuctionsListPage";
 import AuctionDetailsPage from "./Auctions/AuctionDetailsPage/AuctionDetailsPage";
 import AuctionFormPage from "./Auctions/AuctionFormPage/AuctionFormPage";
 import UserProfile from "./User/UserProfile/UserProfile";
+import NotificationPage from "./Notifications/NotificationPage/NotificationPage";
 
 interface MainTabsProps { }
 

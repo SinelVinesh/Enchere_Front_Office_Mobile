@@ -1,6 +1,3 @@
-import { Image } from './../models/Image';
-import { Vehicle } from '../models/Vehicle';
-import { Response} from './Response'
 import { User } from '../models/User';
 import axios from 'axios';
 import {Category} from "../models/Category";
@@ -10,13 +7,18 @@ import {Preferences} from "@capacitor/preferences";
 
 // data urls
 export const host =
-// "https://gestionflotte-production-0361.up.railway.app/"
-"http://localhost:8080"
+"https://auctions-app.up.railway.app"
+// "http://localhost:8080"
+// "http://192.168.88.54:8080"
 const loginUrl = `${host}/users/login`
 const auctionsUrl = `${host}/auctions`
 const registerUrl = `${host}/users/register`
 const categoriesUrl = `${host}/categories`
+const reloadsUrl = `${host}/reloads/request`
 const auctionUrl = (id: string) => `${auctionsUrl}/${id}`
+const auctionUrlOffset = (id: number) => `${auctionsUrl}Offset/${id}`
+const userUrl = (id: string) => `${host}/users/${id}`
+const notificationTokenUrl = `${host}/notificationToken`
 
 /* api calls */
 // Generic
@@ -75,8 +77,8 @@ export const register = (data: User): Promise<UserToken> => {
     return postCall(registerUrl, data)
 }
 
-export const getAuctions = (): Promise<Auction[]> => {
-    return getCall(auctionsUrl, true)
+export const getAuctions = (offset: number): Promise<Auction[]> => {
+    return getCall(auctionUrlOffset(offset), true)
 }
 
 export const saveAuction = (auction: Auction): Promise<Auction> => {
@@ -87,53 +89,27 @@ export const getAuction = (id: string) => {
     return getCall(auctionUrl(id))
 }
 
-
 export const getCategories = async (): Promise<Category[]> => {
     return getCall(categoriesUrl)
 }
 
-export const getUser = async (): Promise<User> => {
-    return {
-        username: "RJean",
-        email: "R.Jean@gmail.com",
-        birthDate: new Date("1999-01-01"),
-        registrationDate: new Date("2021-01-01"),
-        accountBalance: 1000000,
-        accountUsableBalance: 750000,
-    }
+export const setNotificationToken = (data: any) => {
+    return postCall(notificationTokenUrl,data, true)
 }
 
-const vehiclesUrl = host + "vehicles";
-
-export const getVehicles = async () =>
-    axios.get(vehiclesUrl)
-        .then(res => (res.status == 200 ? res : Promise.reject(res)))
-        .then(res => {
-            console.log(res.data);
-            return res.data as Promise<Response<Vehicle[]>>;
-        })
-        .then(data => data.data.sort((a,b) => a.id - b.id));
-
-export const userLogin = async (username:string,password:string) => {
-    return axios.post(loginUrl,{username:username, password:password})
-        .then(res => (res.status == 200 ? res : Promise.reject(res)))
-        .then(res => res.data as Promise<Response<User>>)
-        .then(data => data.data)
+export const getUserProfile = async (): Promise<User> => {
+    const {value} = await Preferences.get({key: "userToken"})
+    const userToken: UserToken | undefined = value ? JSON.parse(value) as UserToken : undefined
+    console.log(userToken)
+    return getCall(userUrl(userToken?.user.id?.toString()!))
 }
 
-export const saveImage = async(vehicle: Vehicle, image:Image) => {
-    const vehicleData: Vehicle = {
-        id:vehicle.id,
-        licensePlate: vehicle.licensePlate,
-        kilometrages:vehicle.kilometrages,
-        image:image,
-        currentInsurance: vehicle.currentInsurance
-    }
-    const uploadImageUrl = vehiclesUrl + `/${vehicleData.id}/image`;
-    return axios.post(uploadImageUrl,vehicleData)
-        .then(res => (res.status == 200 ? res : Promise.reject(res)))
-        .then(res => res.data as Promise<Response<any>>)
-        .then(data => data.message);
+export const updateUserProfile = async (user: User): Promise<User> => {
+    const {value} = await Preferences.get({key: "userToken"})
+    const userToken: UserToken | undefined = value ? JSON.parse(value) as UserToken : undefined
+    return putCall(userUrl(userToken?.user.id?.toString()!), user, true)
 }
 
-
+export const submitReloadRequest = async (data:any): Promise<any> => {
+    return postCall(reloadsUrl, data, true)
+}

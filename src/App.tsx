@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
@@ -27,6 +27,9 @@ import './theme/style.css';
 import MainTabs from './pages/MainTabs';
 import Login from './pages/Authenfication/Login/Login';
 import Register from "./pages/Authenfication/Register/Register";
+import {PushNotifications, Token, ActionPerformed, PushNotificationSchema} from "@capacitor/push-notifications";
+import {Toast} from "@capacitor/toast";
+import {notificationsRegistration,  showToast} from "./services/NotificationService";
 
 setupIonicReact();
 
@@ -39,6 +42,38 @@ const App: React.FC = () => {
 interface IonicAppProps { }
 
 const IonicApp: React.FC<IonicAppProps> = ({}) => {
+    const nullEntry: any[] = []
+    const [notifications, setnotifications] = useState(nullEntry);
+    useEffect(() => {
+        try{
+            registerNotifications();
+        }
+        catch(Exception){
+            console.log("erreur notif "+Exception);
+        }
+    }, []);
+
+
+    const registerNotifications = async () => {
+        await PushNotifications.checkPermissions().then(async (res) => {
+            if (res.receive !== 'granted') {
+                await PushNotifications.requestPermissions().then((res) => {
+                    if (res.receive === 'denied') {
+                        showToast('Push Notification permission denied');
+                    }
+                    else {
+                        showToast('Push Notification permission granted');
+                        notificationsRegistration(setnotifications, notifications);
+                    }
+                });
+            }
+            else {
+                notificationsRegistration(setnotifications, notifications);
+            }
+        }).catch((err) => {
+            console.log("erreur notif "+err);
+        });
+    };
 
   return (
         <IonApp >

@@ -3,7 +3,7 @@ import {User} from "./User";
 import {Category} from "./Category";
 import {Image} from "./Image";
 import {Photo} from "@capacitor/camera";
-import {AuctionPhoto} from "./AuctionPhoto";
+import {AppPhoto} from "./AppPhoto";
 
 interface AuctionState {
     id: number;
@@ -20,7 +20,7 @@ export interface Auction {
     startDate?: Date;
     startingPrice?: number;
     bidStep?: number;
-    images?: AuctionPhoto[];
+    images?: AppPhoto[];
     endDate?: Date;
     topBid?: Bid;
     auctionState?: AuctionState;

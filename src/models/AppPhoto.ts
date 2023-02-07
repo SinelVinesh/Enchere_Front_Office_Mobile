@@ -1,5 +1,5 @@
 import {Photo} from "@capacitor/camera";
 
-export interface AuctionPhoto extends Photo {
+export interface AppPhoto extends Photo {
     photoPath?: string;
 }

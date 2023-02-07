@@ -7,7 +7,7 @@ import {
     IonMenuButton, IonNote,
     IonPage,
     IonTitle,
-    IonToolbar, useIonLoading
+    IonToolbar, useIonLoading, useIonViewWillLeave
 } from "@ionic/react";
 import React, {useState} from "react";
 import AuctionInfo from "./AuctionInfo";
@@ -31,10 +31,14 @@ const AuctionFormPage: React.FC = () => {
 
     const upload = async () => {
         present('Enregistrement de l\'enchère...')
+        console.log(auction)
         saveAuction(auction).then((data) => {
             console.log(data)
             dismiss()
-            history.push('/tabs/auctions')
+            history.push({pathname:'/tabs/auctions'})
+        }).catch((err) => {
+            console.log(err.response.data)
+            dismiss()
         })
     }
 
@@ -45,6 +49,10 @@ const AuctionFormPage: React.FC = () => {
         case 2:
             rendering = <AuctionImages prevPage={prevPage} auction={auction} setAuction={setAuction} upload={upload}/>
     }
+    useIonViewWillLeave(() => {
+        setAuction({})
+        setPage(1)
+    })
     return (
         <IonPage>
             <IonHeader>

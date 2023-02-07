@@ -11,11 +11,11 @@ import {
     IonPage,
     IonRow,
     IonText,
-    IonToast,
+    IonToast, useIonLoading,
     useIonViewWillEnter
 } from '@ionic/react';
 import './Login.scss';
-import {login, userLogin} from '../../../data/dataApi';
+import {login} from '../../../data/dataApi';
 import {useAppDispatch, useAppSelector} from '../../../app/hooks';
 import {loggedIn, selectUser} from '../../../data/userSlice';
 import {Link} from "react-router-dom";
@@ -24,16 +24,14 @@ import {Preferences} from "@capacitor/preferences";
 import {AxiosError} from "axios";
 
 const Login: React.FC = () => {
-    const user = useAppSelector(selectUser);
-    const dispatch = useAppDispatch();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [usernameInvalid, setUsernameInvalid] = useState<string| boolean>(false);
     const [passwordInvalid, setPasswordInvalid] = useState<string| boolean>(false);
     const [showLoginToast, setShowLoginToast] = useState(false);
     const [loginResult, setLoginResult] = useState<string>("");
-    const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
-
+    const [present, dismiss] = useIonLoading();
+    
     const history = useHistory();
     const submit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,18 +45,20 @@ const Login: React.FC = () => {
         }
 
         if (username && password) {
+            present('Connexion en cours...')
             await login(username, password)
                 .then((data) => {
                     console.log(data);
                     Preferences.set({key: "userToken", value: JSON.stringify(data)});
-                    setLoginSuccess(true);
                     setShowLoginToast(true);
                     setLoginResult("Connexion réussie");
+                    dismiss();
                     history.push('/tabs/auctions', {direction: 'none'});
                 })
                 .catch((error: AxiosError) => {
                     setPasswordInvalid((error.response?.data as any).error)
                     setUsernameInvalid('')
+                    dismiss();
                 });
         }
     };

@@ -59,7 +59,7 @@ const AuctionDetailsPage: React.FC = () => {
                     >
                         {auction?.images?.map((image, index) => (
                                 <SwiperSlide key={image.photoPath!}>
-                                    <img src={`${host}${image.photoPath!}`} alt={"Image"} className={"auction-list-image"}/>
+                                    <img src={`${image.photoPath!}`} alt={"Image"} className={"auction-list-image"}/>
                                 </SwiperSlide>
 
                         ))
